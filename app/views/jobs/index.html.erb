@@ -1,0 +1,61 @@
+<h1>Listing jobs</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Addr</th>
+      <th>City</th>
+      <th>Industry</th>
+      <th>Commission</th>
+      <th>Role</th>
+      <th>Requirement</th>
+      <th>Base pay</th>
+      <th>Month</th>
+      <th>Bonus</th>
+      <th>Allowance</th>
+      <th>Stock</th>
+      <th>Stock num</th>
+      <th>Concall date</th>
+      <th>User</th>
+      <th>Peer</th>
+      <th>Memo</th>
+      <th>Company info</th>
+      <th>Work year</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @jobs.each do |job| %>
+      <tr>
+        <td><%= job.title %></td>
+        <td><%= job.addr %></td>
+        <td><%= job.city %></td>
+        <td><%= job.industry %></td>
+        <td><%= job.commission %></td>
+        <td><%= job.role %></td>
+        <td><%= job.requirement %></td>
+        <td><%= job.base_pay %></td>
+        <td><%= job.month %></td>
+        <td><%= job.bonus %></td>
+        <td><%= job.allowance %></td>
+        <td><%= job.stock %></td>
+        <td><%= job.stock_num %></td>
+        <td><%= job.concall_date %></td>
+        <td><%= job.user_id %></td>
+        <td><%= job.peer %></td>
+        <td><%= job.memo %></td>
+        <td><%= job.company_info %></td>
+        <td><%= job.work_year %></td>
+        <td><%= link_to 'Show', job %></td>
+        <td><%= link_to 'Edit', edit_job_path(job) %></td>
+        <td><%= link_to 'Destroy', job, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Job', new_job_path %>

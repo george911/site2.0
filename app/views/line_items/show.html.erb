@@ -1,0 +1,49 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Mobile:</strong>
+  <%= @line_item.mobile %>
+</p>
+
+<p>
+  <strong>Email:</strong>
+  <%= @line_item.email %>
+</p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @line_item.name %>
+</p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @line_item.title %>
+</p>
+
+<p>
+  <strong>Status:</strong>
+  <%= @line_item.status %>
+</p>
+
+<p>
+  <strong>City:</strong>
+  <%= @line_item.city %>
+</p>
+
+<p>
+  <strong>Talent:</strong>
+  <%= @line_item.talent_id %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @line_item.user %>
+</p>
+
+<p>
+  <strong>Job:</strong>
+  <%= @line_item.job %>
+</p>
+
+<%= link_to 'Edit', edit_line_item_path(@line_item) %> |
+<%= link_to 'Back', line_items_path %>

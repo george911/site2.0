@@ -1,0 +1,89 @@
+<%= form_for(@user) do |f| %>
+  <% if @user.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+
+      <ul>
+      <% @user.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :mobile %><br>
+    <%= f.text_field :mobile %>
+  </div>
+  <div class="field">
+    <%= f.label :user_name %><br>
+    <%= f.text_field :user_name %>
+  </div>
+  <div class="field">
+    <%= f.label :true_name %><br>
+    <%= f.text_field :true_name %>
+  </div>
+  <div class="field">
+    <%= f.label :user_type %><br>
+    <%= f.text_field :user_type %>
+  </div>
+  <div class="field">
+    <%= f.label :email %><br>
+    <%= f.text_field :email %>
+  </div>
+  <div class="field">
+    <%= f.label :base_salary %><br>
+    <%= f.number_field :base_salary %>
+  </div>
+  <div class="field">
+    <%= f.label :month_num %><br>
+    <%= f.number_field :month_num %>
+  </div>
+  <div class="field">
+    <%= f.label :bonus %><br>
+    <%= f.number_field :bonus %>
+  </div>
+  <div class="field">
+    <%= f.label :housing %><br>
+    <%= f.number_field :housing %>
+  </div>
+  <div class="field">
+    <%= f.label :transport %><br>
+    <%= f.number_field :transport %>
+  </div>
+  <div class="field">
+    <%= f.label :stock %><br>
+    <%= f.text_field :stock %>
+  </div>
+  <div class="field">
+    <%= f.label :stock_num %><br>
+    <%= f.number_field :stock_num %>
+  </div>
+  <div class="field">
+    <%= f.label :retention_bonus %><br>
+    <%= f.number_field :retention_bonus %>
+  </div>
+  <div class="field">
+    <%= f.label :expect_package %><br>
+    <%= f.number_field :expect_package %>
+  </div>
+  <div class="field">
+    <%= f.label :expect_month_salary %><br>
+    <%= f.number_field :expect_month_salary %>
+  </div>
+  <div class="field">
+    <%= f.label :birthday %><br>
+    <%= f.date_select :birthday %>
+  </div>
+  <div class="field">
+    <%= f.label :city %><br>
+    <%= f.text_field :city %>
+  </div>
+  <div class="field">
+    <%= f.label :title %><br>
+    <%= f.text_field :title %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

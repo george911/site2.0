@@ -1,0 +1,45 @@
+cn:
+
+# 翻译sign_up页的date_select和生日的月份
+  date:
+    order:
+      - :day 
+      - :month
+      - :year
+    month_names: [一月,二月,三月,四月,五月,六月,七月,八月,九月,十月,十一月,十二月]
+ 
+# 为了distance_in_words设置
+  datetime: 
+    distance_in_words:
+      less_than_x_minutes:
+        one:    "1 minute" 
+        other:  "%{count} minutes"
+      over_x_years:
+        one:    "1 years"
+        other:  "%{count} years"
+      x_days:   "1 years"
+
+# 出错提示
+  errors:
+    messages:
+      not_saved:        "出现错误"
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            password_confirmation:
+              confirmation:     "密码没有确认"
+            password:
+              too_short:          "密码太短"
+            email:
+              blank:            "邮箱不能为空"
+#devise翻译
+  devise:
+    registrations:
+      user:
+        signed_up:      "恭喜您，注册成功!" # 注册后的提示
+    sessions:
+      user:
+        signed_in:      "登录成功"
+

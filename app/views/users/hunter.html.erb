@@ -1,0 +1,143 @@
+我是猎头
+<div class='container' ><p id="notice"><%= notice %></p><!--注册好返回这里有一条提示-->
+    <!--标题行/头像-->
+    <div class = 'row'>
+        <div class='col-lg-2'>
+	  <table>
+            <tr><td colspan='3'><%= image_tag(@user.avatar.url,size: '120x120', class: "img-square") %></tr></td>
+	    <tr>
+	      <td colspan='3' align='center'><%= @user.reviews.where("rating>2").sum(:rating) %></td><!--只把大于2的评价计入口碑值-->
+	    </tr>
+	    <tr>
+	      <td colspan='3' align='center'><small>口碑</small></td>
+	    </tr>
+	    <tr>
+	      <td><span style="color:#cc9a67;font-size:16px">•</span><%= @user.reviews.average(:rating) %></td>
+	      <td><span style="color:#cc9a67;font-size:16px">•</span><%= @user.reviews.average(:rating) %></td>
+	      <td><span style="color:#cc9a67;font-size:16px">•</span><%= @user.reviews.average(:rating) %></td>
+	    </tr>
+	  </table>
+        </div>
+
+        <div class='col-lg-2'>
+          <table style='margin-left: -60px'>
+            <tr>
+              <td style='width:50px'>用户名</td><td><%= @user.user_name.present? ? "#{@user.user_name}" : "佚名" %></td>
+            </tr>
+            <tr>
+              <td>城市</td><td><%= @user.city.present? ? "#{@user.city}": " " %></td>
+            </tr>
+            <tr>
+              <td>职衔</td><td><%= @user.title.present? ? " #{@user.title}":" " %></td>
+            </tr>
+            <tr>
+              <td>年龄</td><td><%= remove_unwanted_words distance_of_time_in_words(Date.today,@user.birthday) unless @user.birthday == nil %></td>
+            </tr>
+            <tr>
+
+    	      </tr>
+    	    </table>
+        </div><!--col-lg-2-->
+    </div><!--end row-->
+
+
+  <div class='row'>
+  </div>
+  
+  <div class='row'>
+    <div class='col-lg-3'>
+      <h4 style="color:#007722">自我介绍· · · · · ·</h4>
+      <% if @user.summaries != nil %>
+      <% @user.summaries.each do |f| %>
+        <ul style='padding-left:30px;margin-left:0px;'>
+          <li class="summary">
+            <%= f.content %>
+  	      </li>
+        </ul>
+      <% end %>
+      <% end %>
+    </div><!--col-->
+
+    <div class='col-lg-1'>
+    </div>
+  </div>
+
+  <div class='row'>
+    <div class='col-lg-5'>
+      <h4 style='color:#007722'>教育经历· · · · · ·</h4>
+      <% if @user.educations != nil %>
+      <% @user.educations.each do |f| %>
+      <div class='col-lg-7'>
+    	  <%= f.enter_school.strftime("%b %Y") %> - 
+    	  <%= f.uptonow ? "现在" : f.leave_school.strftime("%b %Y") %>
+      </div>
+    	<div class='col-lg-5'>
+    	  <table>
+    	    <tr><td><%= f.school %></td></tr>
+    	    <tr><td><%= f.major %> | <%= f.degree %></td></tr>
+        </table> 
+      </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div><!--end row-->
+
+  <div class='row'>
+    <div id="accordion" role="tablist" aria-multiselectable="true">
+      <div class='col-lg-4 list'>
+        <%= link_to "#{@user.reviews.count}条评论" %>
+      </div>
+      <div class='col-lg-3 list'>
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                <% if current_user != nil and @user.reviews.find_by(author_id: current_user.id)  %>
+		  <span id='label-4'>修改对他的评价</span>
+                <% else %>
+  		  <span id='label-3'>我来评价他</span>
+                <% end %>
+
+        </a>
+      </div>
+    </div>
+  </div><!--row-->
+
+  <div class='row'>
+    <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne" style="margin:0px;">
+      <div class='col-lg-6'>
+        <div class="panel-body">
+            <%= form_for([@user,@review]) do |f| %>
+              <div class='col-lg-7'>
+                <%= f.text_area :body,cols: 60, rows: 4, class: "form-control" %>
+		          
+		            <table>
+                  <tr>
+                    <td><%= f.label :你们共同的雇主 %></td>
+                    <td><%= f.label :置顶, class: "pull-right"%><%= f.check_box :top %></td>
+                  </tr>
+                  <tr>
+                    <td><%= f.select :employer,@user.works.collect { |p| [ p.employer ] } %></td>
+                  </tr>
+                </table>
+              </div>
+
+              <div class='col-lg-5'>
+		<table>
+		  <tr><td ><%= f.radio_button :rating,1 %>&nbsp;<span style='background-color:#ff632f;color:#ffffff' class="glyphicon glyphicon-star" aria-hidden="true"></span></td></tr>
+		  <tr><td><%= f.radio_button :rating,2 %>&nbsp;<span style='background-color:#ff632f;color:#ffffff' class="glyphicon glyphicon-star" aria-hidden="true"></span><span style='background-color:#ff632f;color:#ffffff' class="glyphicon glyphicon-star" aria-hidden="true"></span></td></tr>
+		  <tr><td><%= f.radio_button :rating,3 %>&nbsp;<span style='background-color:#ff632f;color:#ffffff' class="glyphicon glyphicon-star" aria-hidden="true"></span><span style='background-color:#ff632f;color:#ffffff' class="glyphicon glyphicon-star" aria-hidden="true"></span><span style="background-color:#ff632f;color:#ffffff" class="glyphicon glyphicon-star" aria-hidden="true"></span></td></tr>
+		  <tr><td><%= f.radio_button :rating,4 %>&nbsp;<span style="background-color:#ff632f;color:#ffffff" class="glyphicon glyphicon-star" aria-hidden="true"></span><span style="background-color:#ff632f;color:#ffffff" class="glyphicon glyphicon-star" aria-hidden="true"></span><span style="background-color:#ff632f;color:#ffffff" class="glyphicon glyphicon-star" aria-hidden="true"></span><span style='background-color:#ff632f;color:#ffffff' class="glyphicon glyphicon-star" aria-hidden="true"></span></td></tr>
+		  <tr><td><%= f.radio_button :rating,5 %>&nbsp;<span style="background-color:#ff632f;color:#ffffff" class="glyphicon glyphicon-star" aria-hidden="true"></span><span style="background-color:#ff632f;color:#ffffff" class="glyphicon glyphicon-star" aria-hidden="true"></span><span style="background-color:#ff632f;color:#ffffff" class="glyphicon glyphicon-star" aria-hidden="true"></span><span style="background-color:#ff632f;color:#ffffff" class="glyphicon glyphicon-star" aria-hidden="true"></span><span style="background-color:#ff632f;color:#ffffff" class="glyphicon glyphicon-star" aria-hidden="true"></span></td></tr>
+		  <tr style='height:40px'><td><%= f.submit '发表', class: "btn btn-success btn-xs" %></td></tr>
+	        </table>
+	      </div><!--end col-lg-5-->
+  	        <% end %> <!-- end form_for-->
+        </div>
+      </div>
+    </div>
+  </div> <!--end row -->
+
+  <div id='content' class='col-lg-7'>
+    <%= render(partial:'review')%> <!--这句话是从views/users/下面取模板对比views/jobs/show.html.erb-->
+  </div>
+
+
+</div><!--end container-->
