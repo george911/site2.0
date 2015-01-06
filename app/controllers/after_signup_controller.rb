@@ -1,3 +1,4 @@
+# AfterSignup
 class AfterSignupController < ApplicationController
   include Wicked::Wizard
   steps :confirm, :summary, :education, :work, :salary
