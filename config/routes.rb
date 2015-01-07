@@ -8,7 +8,9 @@ Rails.application.routes.draw do
       get "sign_up", to: "registrations#new"
       end
     root 'users#index'
-    resources :jobs
+    resources :jobs do
+      resources :build, controller: 'jobs/build'
+    end
     resources :after_signup
     resources :line_items
     resources :users do

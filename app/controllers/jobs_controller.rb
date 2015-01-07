@@ -10,6 +10,8 @@ class JobsController < ApplicationController
   # GET /jobs/1
   # GET /jobs/1.json
   def show
+    @user=User.find(@job.user_id) #发布者id
+    @talent=current_user
   end
 
   # GET /jobs/new
@@ -28,7 +30,7 @@ class JobsController < ApplicationController
 
     respond_to do |format|
       if @job.save
-        format.html { redirect_to @job, notice: 'Job was successfully created.' }
+	format.html { redirect_to job_build_path(job_id: @job.id, id: :job_scope) }
         format.json { render :show, status: :created, location: @job }
       else
         format.html { render :new }

@@ -1,99 +1,178 @@
-<p id="notice"><%= notice %></p>
+<div class='container' >
+  <div class='row'>
+    <div class='col-lg-6'>
+    <p id='title'><%= @job.title %></p>
+    </div>
 
-<p>
-  <strong>Title:</strong>
-  <%= @job.title %>
-</p>
+    <div class='col-lg-4'>
+      <%= image_tag(@user.avatar.url(:small),class: "img-rounded") %>
+    </div>
+  </div>
 
-<p>
-  <strong>Addr:</strong>
-  <%= @job.addr %>
-</p>
+  <div class='row'>
+    <div class='col-lg-3'>
+      <table>
+        <tr><td><strong>地点:</strong></td><td><%= @job.city %> | <%= @job.addr %></td></tr>
+        <tr><td><strong>行业:</strong></td><td><%= @job.industry.present? ? @job.industry : '面议' %></td></tr>
+        <tr><td><strong>年薪:</strong></td><td><%= @job.base_pay.present? ? "#{@job.base_pay}人民币 x  #{@job.month}" : '面议' %></td></tr>
+        <tr><td><strong>奖金:</strong></td><td><%= @job.bonus.present? ? "#{@job.bonus} 人民币" : '面议' %></td></tr>
+        <tr><td><strong>推荐佣金:</strong></td><td><%= @job.commission.present? ? "#{@job.commission} 人民币" : '面议' %></td></tr>
+        <tr><td><strong>发布时间:</strong></td><td><%= @job.created_at.strftime("%Y-%m-%d") %></td></tr>
+        <tr><td><strong>最后回复:</strong></td><td>2014-10-20</td></tr>
+        <tr><td><strong>备忘:</strong></td><td><%= @job.memo %></td></tr>
+      </table>
+    </div><!--cl-lg-3-->
+ 
+    <div class='col-lg-2'>
+      <p>经验要求:<%= @job.work_year %>年</p>
+      <table>
+       <% @job.experiences.each do |f| %>
+      	 <tr>
+        	   <td style='font-size:12px'><%= f.skill %></td>
+      	   <td>&nbsp;<% (f.year<=10 ? "#{(f.year+1)/2}" : 5).to_i.times do %>
+      	     <span style="margin-left:-3px;border-radius:1px;background-color:#ff632f;color:#ffffff;" class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                   <% end %>
+           	   </td>
+      	   <td style='font-size:10px'>&nbsp;
+      	     <%= f.year %>年
+      	   </td>
+         </tr>
+       <% end %>
+     </table> 
+    </div> 
+  </div><!--row-->
 
-<p>
-  <strong>City:</strong>
-  <%= @job.city %>
-</p>
+  <div><br /></div>
+  <div class='row'>
+    <div class='col-lg-4' id='orange'>
+      <button class='btn'>关注</button>
+      <button class='btn'>分享</button>
+      <button class='btn'>预约</button>
+      <button class='btn'>领取任务</button>
+    </div>
+   
+    <div class='col-lg-4' id='green' >
+      <div class='col-lg-2'>
+      	<%= link_to '推荐', refer_path(job_id: @job) %><!--带上job_id是为了推荐方便-->
+            </div>
+            <div class='col-lg-2'>
+      	<%= link_to '应聘',accept_url(id: @job.id),remote:true %>
+      </div>
+    </div>
+  </div>
 
-<p>
-  <strong>Industry:</strong>
-  <%= @job.industry %>
-</p>
+  <div><!--divide-->
+    <br />  <br />
+  </div>
 
-<p>
-  <strong>Commission:</strong>
-  <%= @job.commission %>
-</p>
+  <div class='row'>
+    <div class='col-lg-6'>
+      <p class='item'>工作职责· · · · · ·</p>
+      <%= @job.role.gsub(/\n/,'<br />').html_safe unless @job.role.blank? %>
+    </div>
+  </div>
 
-<p>
-  <strong>Role:</strong>
-  <%= @job.role %>
-</p>
+  <div><!--divide-->
+    <br />
+  </div>
 
-<p>
-  <strong>Requirement:</strong>
-  <%= @job.requirement %>
-</p>
+  <div class='row'>
+    <div class='col-lg-6'>
+      <p class='item'>职位要求· · · · · ·</p>
+      <%= @job.requirement.gsub(/\n/,'<br />').html_safe unless @job.requirement.blank? %>
+    </div>
+  </div>
 
-<p>
-  <strong>Base pay:</strong>
-  <%= @job.base_pay %>
-</p>
+  <div><!--divide-->
+    <br />
+  </div>
 
-<p>
-  <strong>Month:</strong>
-  <%= @job.month %>
-</p>
+  <div class='row'>
+    <div class='col-lg-2'>
+      <p class='item'>汇报对象:</p>
+          <% if @job.bosses != nil %>
+	  <% @job.bosses.each do |f| %>
+	  <%= f.title %>&nbsp;&nbsp;&nbsp;
+          <% end %> 
+      <% end %>
+    </div>
+    <div class='col-lg-2'>
+      <p class='item'>下属:</p>
+        <% if @job.subordinates != nil %>
+	  <table>
+    	    <% @job.subordinates.each do |f| %>
+	      <tr>
+	        <td><%= f.title %>&nbsp;&nbsp;</td>
+		<td><%= f.num %>人</td>
+	      </tr>
+	        <% end %>
+	   </table>
+            <% end %>
+    </div>
+  </div><!--row-->
 
-<p>
-  <strong>Bonus:</strong>
-  <%= @job.bonus %>
-</p>
+  <div><!--divide-->
+    <br />
+  </div>
+  
+  <div class='row'>
+    <div class='col-lg-6'>
+      <p class='item'>公司简介· · · · · ·</p>
+      <%= @job.profile.gsub(/\n/,'<br />').html_safe unless @job.profile.blank? %>
+    </div>
+ </div> 
 
-<p>
-  <strong>Allowance:</strong>
-  <%= @job.allowance %>
-</p>
+  <div><!--divide-->
+    <br />
+  </div>
+  
+  <div id="accordion" role="tablist" aria-multiselectable="true">
+  <div class='row'>
+    <div class='col-lg-3 list'>
+      <table class='tab'>
+        <td id='tab1' width='100px'><%= link_to "#{@job.comments.count}条评论", comment_url(id: @job.id),remote:true %></td>
+        <td id='tab2' width='100px'><%= link_to "候选人", apply_url(id: @job.id),remote:true %></td><!--携带job id到apply action里面-->
+        </td>
+      </table >
+    </div>
+    <div class='col-lg-1 list'>
+       <!--collapse-->
+       <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+         <table class='tab' >
+           <td class='test' >
+		
+	      <% if (current_user != nil) and (@job.comments.find_by user_id: current_user.id)  %>
+	        <%= link_to "修改点评",edit_job_comment_path(@job,@user),id: "label-1" %><!--@job和@user两个instance variable可以确定comment_id,无需输入id:-->
+      	      <% else %>
+                <%= link_to "我也说两句",new_job_comment_path(job_id: @job.id),id: "label-2" %>
+              <% end %>
 
-<p>
-  <strong>Stock:</strong>
-  <%= @job.stock %>
-</p>
+            </td>
+         </table >
+       </a>
+    </div>
+  </div><!--row-->
 
-<p>
-  <strong>Stock num:</strong>
-  <%= @job.stock_num %>
-</p>
+  <div class='row'>
+    <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne" style="margin:0px;">
+      <div class='col-lg-4'>
+	<div class="panel-body">
+          <%= form_for([@job,@comment]) do |f| %>
+          <%= f.text_area :body, placeholder:'请输入评论',class: "form-control" %>
+        </div>
+      </div> 
+      <div class='col-lg-1' style='margin-top:15px'>
+	<div >
+          <%= f.submit '发表',class: "btn btn-success" %>
+          <% end %>
+        </div>
+      </div><!--col-lg-->
+    </div>
+  </div><!--row-->
+  
+  <div id='content'>
+    <%= render @job.comments.order('top asc,created_at asc') %> <!--这句话是从views/comments/下面取模板-->
+  </div> 
 
-<p>
-  <strong>Concall date:</strong>
-  <%= @job.concall_date %>
-</p>
-
-<p>
-  <strong>User:</strong>
-  <%= @job.user_id %>
-</p>
-
-<p>
-  <strong>Peer:</strong>
-  <%= @job.peer %>
-</p>
-
-<p>
-  <strong>Memo:</strong>
-  <%= @job.memo %>
-</p>
-
-<p>
-  <strong>Company info:</strong>
-  <%= @job.company_info %>
-</p>
-
-<p>
-  <strong>Work year:</strong>
-  <%= @job.work_year %>
-</p>
-
-<%= link_to 'Edit', edit_job_path(@job) %> |
-<%= link_to 'Back', jobs_path %>
+  </div><!--对应122行-->
+</div>
