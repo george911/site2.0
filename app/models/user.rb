@@ -1,16 +1,17 @@
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  letsrate_rateable "autism_friendly", "overall"
   letsrate_rater
   has_many :summaries, :dependent => :destroy
   has_many :educations, :dependent => :destroy
   has_many :works,:dependent => :destroy
   has_many :reviews, :dependent => :destroy
-  
+  has_many :line_items
+
   accepts_nested_attributes_for :summaries, allow_destroy:true,reject_if: proc { |attributes| attributes['content'].blank? } 
   accepts_nested_attributes_for :educations, allow_destroy:true,reject_if: proc { |attributes| attributes['school'].blank? }
   accepts_nested_attributes_for :works, allow_destroy:true,reject_if: proc { |attributes| attributes['employer'].blank? }# proc的用法http://ruby-doc.org/core-2.1.1/Proc.html
+  accepts_nested_attributes_for :line_items
   accepts_nested_attributes_for :reviews
 
   # avatar设置

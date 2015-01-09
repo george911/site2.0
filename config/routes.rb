@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  post '/rate' => 'rater#create', :as => 'rate'
   devise_for :users, :controllers => { :registrations => "registrations" } #新建registrations controller,为了能够注册后重定向到after_signup_path
   scope '(:locale)' do #:locale是插入语，放在path前面，代表了地址里面出现的:locale参数如(en,cn等),
     devise_scope :user do
@@ -8,11 +9,16 @@ Rails.application.routes.draw do
       get "sign_up", to: "registrations#new"
       end
     root 'users#index'
+    
     resources :jobs do
+      get 'apply' => :apply
+      get 'accept' => 'line_items#accept', as: :accept
+      resources :comments
+      resources :line_items do
+      end
       resources :build, controller: 'jobs/build'
     end
     resources :after_signup
-    resources :line_items
     resources :users do
       resources :reviews do #因为需要params[:user_id],所以把路径包含resources :users
         member { post :rating }

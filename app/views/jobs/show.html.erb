@@ -1,11 +1,24 @@
 <div class='container' >
   <div class='row'>
+    <%= notice %>
+  </div>
+  
+  <div class='row'>
     <div class='col-lg-6'>
-    <p id='title'><%= @job.title %></p>
+    <p id='title'>
+      <table>
+        <tr>
+          <td><span style='font-size:20px'><%= @job.title %></span></td>
+        </tr>
+        <tr>
+          <td><%= rating_for @job, "job_rating" %></td>
+        </tr>
+      </table>
+    </p>
     </div>
 
     <div class='col-lg-4'>
-      <%= image_tag(@user.avatar.url(:small),class: "img-rounded") %>
+      <%= image_tag(@poster.avatar.url(:small),class: "img-rounded") %>
     </div>
   </div>
 
@@ -51,13 +64,14 @@
       <button class='btn'>领取任务</button>
     </div>
    
-    <div class='col-lg-4' id='green' >
+    <div class='col-lg-4' id='green_button' >
       <div class='col-lg-2'>
-      	<%= link_to '推荐', refer_path(job_id: @job) %><!--带上job_id是为了推荐方便-->
-            </div>
-            <div class='col-lg-2'>
-      	<%= link_to '应聘',accept_url(id: @job.id),remote:true %>
+      	<%= link_to '推荐', new_job_line_item_path(@job) %><!--带上job_id是为了推荐方便-->
       </div>
+      <div class='col-lg-2'>
+	<%= link_to '应聘',job_accept_path(@job) %>
+      </div>
+      
     </div>
   </div>
 
@@ -67,8 +81,8 @@
 
   <div class='row'>
     <div class='col-lg-6'>
-      <p class='item'>工作职责· · · · · ·</p>
-      <%= @job.role.gsub(/\n/,'<br />').html_safe unless @job.role.blank? %>
+      <p class='green_title'>工作职责· · · · · ·</p>
+      <p class='text'><%= @job.role.gsub(/\n/,'<br /></p><p class="text">').html_safe unless @job.role.blank? %></p>
     </div>
   </div>
 
@@ -78,8 +92,8 @@
 
   <div class='row'>
     <div class='col-lg-6'>
-      <p class='item'>职位要求· · · · · ·</p>
-      <%= @job.requirement.gsub(/\n/,'<br />').html_safe unless @job.requirement.blank? %>
+      <p class='green_title'>职位要求· · · · · ·</p>
+      <p class='text'><%= @job.requirement.gsub(/\n/,'<br /></p><p class="text">').html_safe unless @job.requirement.blank? %></p>
     </div>
   </div>
 
@@ -89,7 +103,7 @@
 
   <div class='row'>
     <div class='col-lg-2'>
-      <p class='item'>汇报对象:</p>
+      <p class='green_title'>汇报对象:</p>
           <% if @job.bosses != nil %>
 	  <% @job.bosses.each do |f| %>
 	  <%= f.title %>&nbsp;&nbsp;&nbsp;
@@ -97,7 +111,7 @@
       <% end %>
     </div>
     <div class='col-lg-2'>
-      <p class='item'>下属:</p>
+      <p class='green_title'>下属:</p>
         <% if @job.subordinates != nil %>
 	  <table>
     	    <% @job.subordinates.each do |f| %>
@@ -117,38 +131,41 @@
   
   <div class='row'>
     <div class='col-lg-6'>
-      <p class='item'>公司简介· · · · · ·</p>
-      <%= @job.profile.gsub(/\n/,'<br />').html_safe unless @job.profile.blank? %>
+      <p class='green_title'>公司简介· · · · · ·</p>
+      <!--把/n换成回车并且插入段落标记和首行缩进-->
+      <p class='text'><%= @job.company_info.gsub(/\n/,'<br /></p><p class="text">').html_safe unless @job.company_info.blank? %></p>
     </div>
  </div> 
 
   <div><!--divide-->
     <br />
   </div>
-  
+
   <div id="accordion" role="tablist" aria-multiselectable="true">
   <div class='row'>
     <div class='col-lg-3 list'>
-      <table class='tab'>
-        <td id='tab1' width='100px'><%= link_to "#{@job.comments.count}条评论", comment_url(id: @job.id),remote:true %></td>
-        <td id='tab2' width='100px'><%= link_to "候选人", apply_url(id: @job.id),remote:true %></td><!--携带job id到apply action里面-->
-        </td>
-      </table >
+
+            <table class='tab'>
+              <td id='tab1' width='100px'><%= link_to "#{@job.comments.count}条评论", job_comments_path(@job),remote:true %></td>
+              <td id='tab2' width='100px'><%= link_to "候选人", job_apply_path(@job),remote:true %></td><!--携带job id到apply action里面-->
+              </td>
+            </table >
     </div>
     <div class='col-lg-1 list'>
        <!--collapse-->
        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-         <table class='tab' >
-           <td class='test' >
-		
-	      <% if (current_user != nil) and (@job.comments.find_by user_id: current_user.id)  %>
-	        <%= link_to "修改点评",edit_job_comment_path(@job,@user),id: "label-1" %><!--@job和@user两个instance variable可以确定comment_id,无需输入id:-->
-      	      <% else %>
-                <%= link_to "我也说两句",new_job_comment_path(job_id: @job.id),id: "label-2" %>
-              <% end %>
 
-            </td>
-         </table >
+             <table class='tab' >
+               <td class='test' >
+        
+            <% if (current_user != nil) and (@job.comments.find_by user_id: current_user.id)  %>
+              <%= link_to "修改点评",id: "label-1" %><!--@job和@user两个instance variable可以确定comment_id,无需输入id:-->
+                  <% else %>
+                    <%= link_to "我也说两句",id: "label-2" %>
+                  <% end %>
+
+                </td>
+             </table >
        </a>
     </div>
   </div><!--row-->
@@ -156,13 +173,14 @@
   <div class='row'>
     <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne" style="margin:0px;">
       <div class='col-lg-4'>
-	<div class="panel-body">
-          <%= form_for([@job,@comment]) do |f| %>
-          <%= f.text_area :body, placeholder:'请输入评论',class: "form-control" %>
+        <div class="panel-body">
+
+              <%= form_for([@job,@comment]) do |f| %>
+              <%= f.text_area :body, placeholder:'请输入评论',class: "form-control" %>
         </div>
       </div> 
       <div class='col-lg-1' style='margin-top:15px'>
-	<div >
+  <div >
           <%= f.submit '发表',class: "btn btn-success" %>
           <% end %>
         </div>
@@ -173,6 +191,7 @@
   <div id='content'>
     <%= render @job.comments.order('top asc,created_at asc') %> <!--这句话是从views/comments/下面取模板-->
   </div> 
+
 
   </div><!--对应122行-->
 </div>

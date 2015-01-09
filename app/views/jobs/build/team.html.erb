@@ -18,7 +18,8 @@
                   
                 <!--显示已经添加的老板-->
                 <h2>请输入团队信息</h2>
-                <div class='col-lg-6'>
+		<%= hidden_div_if @job.bosses.empty? do %>
+	 	<div class='col-lg-6'>
                   <% if @job.bosses.present? %>
                     <%= "已添加上司" %>
                     <table>
@@ -30,7 +31,7 @@
                     </table>
                   <% end %>
                 </div>
-                <!---->
+		<% end %>
                 
                 <div class="field col-lg-6">
                   <%= f.fields_for :bosses, @job.bosses.build(nil) do |builder| %>

@@ -10,8 +10,15 @@ class JobsController < ApplicationController
   # GET /jobs/1
   # GET /jobs/1.json
   def show
-    @user=User.find(@job.user_id) #发布者id
+    @poster=User.find(@job.user_id) #发布者id
     @talent=current_user
+    @line_items = LineItem.where("job_id = ?",@job.id).take(100) #加unless @line_items == nil是错误的，赋值之前永远为nil
+    if current_user != nil
+      #如果有评论且是登录者的就赋给@comment,否则新建一个
+      @comment = @job.comments.present? ? (@job.comments.find_by(user_id:current_user.id) or Comment.new) : Comment.new
+     else
+       @comment = Comment.new 
+     end
   end
 
   # GET /jobs/new
@@ -53,6 +60,14 @@ class JobsController < ApplicationController
     end
   end
 
+ def apply
+   @job = Job.find(params[:job_id])
+   respond_to do |format|
+      format.html { render 'show' }
+      format.js
+      format.json { render partial: 'apply', status: :created, location: @job }
+    end
+  end
   # DELETE /jobs/1
   # DELETE /jobs/1.json
   def destroy
