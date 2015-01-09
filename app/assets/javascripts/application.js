@@ -21,6 +21,11 @@
 
 
 $(document).ready(function() {
+  $('#myTab a').click(function (e) {
+	  e.preventDefault()
+	  $(this).tab('show')
+  });
+
   $('tr[href]').click(function(event) {
   var url="home/users/"+$(this).attr("href");
   $('#profile-outline').load(url+" #special");

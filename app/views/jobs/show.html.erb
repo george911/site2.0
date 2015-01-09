@@ -16,10 +16,6 @@
       </table>
     </p>
     </div>
-
-    <div class='col-lg-4'>
-      <%= image_tag(@poster.avatar.url(:small),class: "img-rounded") %>
-    </div>
   </div>
 
   <div class='row'>
@@ -106,7 +102,7 @@
       <p class='green_title'>汇报对象:</p>
           <% if @job.bosses != nil %>
 	  <% @job.bosses.each do |f| %>
-	  <%= f.title %>&nbsp;&nbsp;&nbsp;
+	  <p class='text'><%= f.title %></p><!--text为了段落缩进-->
           <% end %> 
       <% end %>
     </div>
@@ -141,57 +137,105 @@
     <br />
   </div>
 
-  <div id="accordion" role="tablist" aria-multiselectable="true">
-  <div class='row'>
-    <div class='col-lg-3 list'>
-
-            <table class='tab'>
-              <td id='tab1' width='100px'><%= link_to "#{@job.comments.count}条评论", job_comments_path(@job),remote:true %></td>
-              <td id='tab2' width='100px'><%= link_to "候选人", job_apply_path(@job),remote:true %></td><!--携带job id到apply action里面-->
-              </td>
-            </table >
-    </div>
-    <div class='col-lg-1 list'>
-       <!--collapse-->
-       <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-
-             <table class='tab' >
-               <td class='test' >
-        
-            <% if (current_user != nil) and (@job.comments.find_by user_id: current_user.id)  %>
-              <%= link_to "修改点评",id: "label-1" %><!--@job和@user两个instance variable可以确定comment_id,无需输入id:-->
-                  <% else %>
-                    <%= link_to "我也说两句",id: "label-2" %>
-                  <% end %>
-
-                </td>
-             </table >
-       </a>
-    </div>
-  </div><!--row-->
-
-  <div class='row'>
-    <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne" style="margin:0px;">
-      <div class='col-lg-4'>
-        <div class="panel-body">
-
-              <%= form_for([@job,@comment]) do |f| %>
-              <%= f.text_area :body, placeholder:'请输入评论',class: "form-control" %>
-        </div>
-      </div> 
-      <div class='col-lg-1' style='margin-top:15px'>
-  <div >
-          <%= f.submit '发表',class: "btn btn-success" %>
-          <% end %>
-        </div>
-      </div><!--col-lg-->
-    </div>
-  </div><!--row-->
   
-  <div id='content'>
-    <%= render @job.comments.order('top asc,created_at asc') %> <!--这句话是从views/comments/下面取模板-->
-  </div> 
+
+  <div class='row'>
+    <div role="tabpanel">
+
+      <!-- Nav tabs -->
+      <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">评论</a></li>
+        <li role="presentation"><a href="#apply" aria-controls="apply" role="tab" data-toggle="tab">申请者</a></li>
+        <li role="presentation"><a href="#poster" aria-controls="poster" role="tab" data-toggle="tab">关于招聘者</a></li>
+      </ul>
+
+      <!-- Tab panes -->
+      <div class="tab-content">
+        <!--评论tab-->
+        <div role="tabpanel" class="tab-pane active" id="home">
+            <div id="accordion" role="tablist" aria-multiselectable="true">
+              <div class='row'>
+                  <div class='col-lg-3 list'>
+                      <%= link_to "#{@job.comments.count}条评论", job_comments_path(@job),remote:true %>
+
+                  </div>
+
+                  <div class='col-lg-5 list no_underline'>
+                     <!--collapse-->
+                     <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                   
+                              <% if (current_user != nil) and (@job.comments.find_by user_id: current_user.id)  %>
+                                <span class='no_underline' id='label-1'>修改点评</span>
+                              <% else %>
+                                <span id='label-2'>我也说两句</span>
+                              <% end %>
+                     </a>
+                  </div>
+              </div><!--row-->
+
+              <div class='row'>
+                  <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne" style="margin:0px;">
+                    <div class='col-lg-4'>
+                      <div class="panel-body">
+
+                            <%= form_for([@job,@comment]) do |f| %>
+                            <%= f.text_area :body, placeholder:'请输入评论',class: "form-control" %>
+                      </div>
+                    </div> 
+                    <div class='col-lg-3'>
+                      <table>
+                        <tr>
+                          <td>总体评价</td><td><%= rating_for @job, "job_rating" %></td>
+                        </tr>
+                        <tr>
+                          <td>反馈速度</td><td><%= rating_for @job, "feedback" %></td>
+                        </tr>
+                      </table>
+                    
+                      <div >
+                        <%= f.submit '发表',class: "btn btn-success" %>
+                        <% end %>
+                      </div>
+                    </div><!--col-lg-->
+                  </div>
+              </div><!--row-->
+
+            </div><!--accordion-->
+            <div class='row'>
+              <%= render @job.comments.order('top asc,created_at asc') %> <!--这句话是从views/comments/下面取模板-->
+            </div>
+        </div>
+      <div role="tabpanel" class="tab-pane" id="apply">
+            <table>
+              <% @job.line_items.each do |line_item| %>
+              <% if line_item.talent_id !=nil %>
+              <tr>
+                <% @talent=User.find(line_item.talent_id) %>
+                <td>
+                  <div id="img"><%= link_to image_tag(@talent.avatar.url,size:'30x30'), id: "#{line_item.talent_id}", action: 'show', controller: 'users', host:'localhost:3000'  %></div></td>
+                <td><%= remove_unwanted_words distance_of_time_in_words(Date.today,@talent.birthday) unless @talent.birthday == nil%> | <%= @talent.educations.first.school unless @talent.educations.first == nil %> | <% @talent.works.each do |f| %>
+                  <% if f != @talent.works.last %>
+                    <%= f.employer %> | <!-- |不能放在<% %>里-->
+                  <% else %>
+                    <%= f.employer %>
+                  <% end %>
+                <% end %>
+                </td>
+              </tr>
+            <% end %>
+            <% end %>
+            </table>
+      </div>
+      <!--招聘者界面-->
+      <div role="tabpanel" class="tab-pane" id="poster">
+        <br>
+          <%= image_tag(@poster.avatar.url(:small),class: "img-rounded") %>
+        
+      </div>
 
 
-  </div><!--对应122行-->
+    </div><!-- Tab panes -->
+
+  </div>
+</div><!--row-->
 </div>

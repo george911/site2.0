@@ -1,5 +1,6 @@
 class Job < ActiveRecord::Base
   letsrate_rateable "job_rating"
+  letsrate_rateable "feedback"
   has_many :bosses, :dependent => :destroy
   has_many :subordinates, :dependent => :destroy
   has_many :experiences, :dependent => :destroy
