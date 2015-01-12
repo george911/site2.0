@@ -8,16 +8,18 @@ class LineItemsController < ApplicationController
       @job.line_items.each do |line_item|
           if line_item.mobile==current_user.mobile or line_item.email==current_user.email #找到推荐信
             line_item.talent_id = current_user.id 
-            line_item.save
-  	         break #找到推荐信就跳出循环，否则下面会重复推荐
-  	      elsif line_item==@job.line_items.last#整个循环都没找到推荐信,要自己创建line_item,说明是自聘
-    	      @line_item=@job.line_items.build(user_id:current_user.id,talent_id:current_user.id)#推荐人和候选人是一个人
+            line_item.status = "等待反馈"
+	    line_item.save
+  	    break #找到推荐信就跳出循环，否则下面会重复推荐
+  	  elsif line_item==@job.line_items.last#整个循环都没找到推荐信,要自己创建line_item,说明是自聘
+    	    @line_item=@job.line_items.build(user_id:current_user.id,talent_id:current_user.id)#推荐人和候选人是一个人
+            @line_item.status = "等待反馈"
             @line_item.save
-  	        break #跳出循环，否则会无穷创建推荐
-  	      end
+  	    break #跳出循环，否则会无穷创建推荐
+  	  end
       end
     else # 没人应聘，自聘
-      @line_item=@job.line_items.build(user_id:current_user.id,talent_id:current_user.id)
+      @line_item=@job.line_items.build(user_id:current_user.id,talent_id:current_user.id,status:"等待反馈")
       @line_item.save
     end
 
@@ -70,11 +72,13 @@ class LineItemsController < ApplicationController
         @line_item = @user.line_items.build(line_item_params)
     end
    
-  # job_id不在params[:line_item]里面,所以赋值在这里进行
+  # line_item_params里面没有job_id，所以需要在这里单独给@line_item赋job_id
   @line_item.job_id = params[:job_id]
   
   if @line_item.city.present? and @line_item.city != @job.city
-      redirect_to :back,notice: '城市不对，您想两地分居吗?' and return
+    redirect_to :back,notice: '城市不对，您想两地分居吗?' and return
+  else
+    @line_item.status = "等待应聘"
   end
 
   respond_to do |format|

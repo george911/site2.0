@@ -25,7 +25,6 @@
         <tr><td><strong>行业:</strong></td><td><%= @job.industry.present? ? @job.industry : '面议' %></td></tr>
         <tr><td><strong>年薪:</strong></td><td><%= @job.base_pay.present? ? "#{@job.base_pay}人民币 x  #{@job.month}" : '面议' %></td></tr>
         <tr><td><strong>奖金:</strong></td><td><%= @job.bonus.present? ? "#{@job.bonus} 人民币" : '面议' %></td></tr>
-        <tr><td><strong>推荐佣金:</strong></td><td><%= @job.commission.present? ? "#{@job.commission} 人民币" : '面议' %></td></tr>
         <tr><td><strong>发布时间:</strong></td><td><%= @job.created_at.strftime("%Y-%m-%d") %></td></tr>
         <tr><td><strong>最后回复:</strong></td><td>2014-10-20</td></tr>
         <tr><td><strong>备忘:</strong></td><td><%= @job.memo %></td></tr>
@@ -33,6 +32,7 @@
     </div><!--cl-lg-3-->
  
     <div class='col-lg-2'>
+      <p><span style='font-size:35px;font-family:Georgia;color:#fa6464'><%= @job.commission %></span><span style='font-size:10px;'>现金奖励</span></p>
       <p>经验要求:<%= @job.work_year %>年</p>
       <table>
        <% @job.experiences.each do |f| %>
@@ -204,27 +204,11 @@
             <div class='row'>
               <%= render @job.comments.order('top asc,created_at asc') %> <!--这句话是从views/comments/下面取模板-->
             </div>
-        </div>
+          </div>
+
+      <!--应聘者-->
       <div role="tabpanel" class="tab-pane" id="apply">
-            <table>
-              <% @job.line_items.each do |line_item| %>
-              <% if line_item.talent_id !=nil %>
-              <tr>
-                <% @talent=User.find(line_item.talent_id) %>
-                <td>
-                  <div id="img"><%= link_to image_tag(@talent.avatar.url,size:'30x30'), id: "#{line_item.talent_id}", action: 'show', controller: 'users', host:'localhost:3000'  %></div></td>
-                <td><%= remove_unwanted_words distance_of_time_in_words(Date.today,@talent.birthday) unless @talent.birthday == nil%> | <%= @talent.educations.first.school unless @talent.educations.first == nil %> | <% @talent.works.each do |f| %>
-                  <% if f != @talent.works.last %>
-                    <%= f.employer %> | <!-- |不能放在<% %>里-->
-                  <% else %>
-                    <%= f.employer %>
-                  <% end %>
-                <% end %>
-                </td>
-              </tr>
-            <% end %>
-            <% end %>
-            </table>
+	<%= render "apply" %>
       </div>
       <!--招聘者界面-->
       <div role="tabpanel" class="tab-pane" id="poster">
